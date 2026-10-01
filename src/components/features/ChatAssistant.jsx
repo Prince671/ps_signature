@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 // Keep model credentials on this server endpoint; VITE_* values are public.
-const CHAT_ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT;
+const CHAT_ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT || "/api/chat";
 
-const MODEL = "gemini-3.8-flash";
 const MAX_REQUESTS = 6;
 
 const SYSTEM_PROMPT = `
@@ -142,10 +141,15 @@ Pulse:`;
       const response = await fetch(CHAT_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: MODEL, input: prompt }),
+        body: JSON.stringify({ input: prompt }),
       });
-      if (!response.ok) throw new Error(`Chat endpoint returned ${response.status}.`);
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const error = new Error(result.message || `Chat endpoint returned ${response.status}.`);
+        error.code = result.code;
+        error.status = response.status;
+        throw error;
+      }
 
       const answer =
         typeof result.output_text === "string"
@@ -162,11 +166,17 @@ Pulse:`;
       setRequestCount((count) => count + 1);
     } catch (error) {
       console.error("Pulse request failed:", error);
-      const detail = error?.message?.includes("404")
-        ? "The configured AI provider or model is unavailable. Please check the server configuration."
-        : error?.message?.includes("429")
+      const detail = error?.code === "CHAT_NOT_CONFIGURED"
+        ? "Pulse chat isn't configured yet. Please use the contact section to reach Prince."
+        : error?.code === "PROVIDER_MODEL_UNAVAILABLE"
+          ? "The AI model configured on the server isn't available. Please use the contact section to reach Prince."
+          : error?.code === "PROVIDER_AUTH_FAILED"
+            ? "Pulse chat's server credentials need attention. Please use the contact section to reach Prince."
+            : error?.code === "PROVIDER_RATE_LIMITED" || error?.status === 429
           ? "The AI service is temporarily rate-limited. Please try again later."
-          : "I couldn't connect to the AI service. Please try again in a moment.";
+          : error?.status === 404
+            ? "Pulse's chat API route wasn't found. Please use the contact section to reach Prince."
+            : "I couldn't connect to the AI service. Please try again in a moment.";
 
       setMessages((prev) => [...prev, { role: "bot", text: detail }]);
     } finally {

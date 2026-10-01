@@ -41,7 +41,9 @@ A premium, high-performance developer portfolio built with a **Nothing OS**-insp
    ```
    - `VITE_SERVICE_ID`, `VITE_TEMPLATE_ID`, `VITE_PUBLIC_KEY` — EmailJS credentials for the contact form.
    - `VITE_RESUME_URL` — optional external resume link (defaults to `/resume.pdf`).
-   - `VITE_CHAT_ENDPOINT` — optional backend endpoint for the Pulse AI assistant. It should accept `{ model, input }` JSON and return `{ output_text }` or `{ answer }` JSON.
+   - `VITE_CHAT_ENDPOINT` — Pulse API URL. On Vercel, use `/api/chat` (the included serverless function).
+   - `GEMINI_API_KEY` — required server-only Google AI Studio key for Pulse. Add it to Vercel's Environment Variables; do not use a `VITE_` prefix.
+   - `GEMINI_MODEL` — optional server-only model ID; defaults to `gemini-3.8-flash`.
 
 4. **Run the development server:**
    ```bash
@@ -64,7 +66,9 @@ These are community-run adapters, not official APIs — if either goes down, the
 
 ## ⚠️ Security note on the AI assistant
 
-The Pulse assistant sends requests only to `VITE_CHAT_ENDPOINT`. Keep provider credentials on that server endpoint; never put private AI API keys in `VITE_*` variables because Vite bundles them into public client code. Without an endpoint, Pulse offers a contact fallback.
+The Pulse assistant sends requests to `VITE_CHAT_ENDPOINT`, which defaults to `/api/chat`. The included Vercel Function in `api/chat.js` calls Gemini server-side, checks the request origin and input size, and applies a best-effort per-instance rate limit. Add `GEMINI_API_KEY` in Vercel's Environment Variables and redeploy. Keep it server-only; never put AI API keys in `VITE_*` variables because Vite bundles those into public client code.
+
+For local chat development, link the project with the Vercel CLI, add `GEMINI_API_KEY` to the local `.env`, and run `npx vercel dev`. The regular Vite server (`npm run dev`) does not execute Vercel Functions, so `/api/chat` will not work through Vite alone. If the endpoint is not configured or the key is missing, Pulse directs visitors to the contact section.
 
 ## 📄 License
 
