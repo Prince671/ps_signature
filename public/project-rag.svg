@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#0a0a0a"/>
+  <rect x="0" y="0" width="800" height="56" fill="#141414"/>
+  <text x="32" y="35" fill="#fff" font-family="monospace" font-weight="bold" font-size="18">RAG // DOCUMENT Q&amp;A</text>
+
+  <rect x="32" y="90" width="230" height="360" fill="#111111" stroke="#333" stroke-width="1"/>
+  <text x="52" y="120" fill="#ff3333" font-family="monospace" font-size="12">SOURCE DOCS</text>
+  <g fill="#1c1c1c" stroke="#333">
+    <rect x="52" y="140" width="170" height="60"/>
+    <rect x="52" y="212" width="170" height="60"/>
+    <rect x="52" y="284" width="170" height="60"/>
+  </g>
+  <g fill="#666" font-family="monospace" font-size="10">
+    <text x="64" y="165">whitepaper.pdf</text>
+    <text x="64" y="237">notes.md</text>
+    <text x="64" y="309">docs.txt</text>
+  </g>
+
+  <g stroke="#ff3333" stroke-width="1.5" opacity="0.7">
+    <line x1="222" y1="170" x2="330" y2="230"/>
+    <line x1="222" y1="242" x2="330" y2="250"/>
+    <line x1="222" y1="314" x2="330" y2="270"/>
+  </g>
+
+  <circle cx="400" cy="250" r="90" fill="none" stroke="#8a63d2" stroke-width="2" stroke-dasharray="4 4"/>
+  <circle cx="370" cy="220" r="6" fill="#8a63d2"/>
+  <circle cx="430" cy="210" r="6" fill="#8a63d2"/>
+  <circle cx="390" cy="270" r="6" fill="#8a63d2"/>
+  <circle cx="440" cy="280" r="6" fill="#8a63d2"/>
+  <circle cx="410" cy="240" r="8" fill="#ff3333"/>
+  <text x="400" y="360" fill="#8a63d2" font-family="monospace" font-size="12" text-anchor="middle">VECTOR SEARCH</text>
+
+  <rect x="540" y="90" width="228" height="360" fill="#111111" stroke="#333" stroke-width="1"/>
+  <text x="560" y="120" fill="#ff3333" font-family="monospace" font-size="12">ANSWER</text>
+  <g fill="#999" font-family="monospace" font-size="11">
+    <text x="560" y="150">Q: What does the</text>
+    <text x="560" y="166">   whitepaper say</text>
+    <text x="560" y="182">   about scaling?</text>
+  </g>
+  <rect x="560" y="200" width="188" height="140" fill="#141414" stroke="#282828"/>
+  <g fill="#ccc" font-family="monospace" font-size="10">
+    <text x="572" y="222">A: The system scales</text>
+    <text x="572" y="238">horizontally via</text>
+    <text x="572" y="254">sharded embeddings</text>
+    <text x="572" y="270">and cached context</text>
+    <text x="572" y="286">windows for low</text>
+    <text x="572" y="302">latency retrieval.</text>
+  </g>
+</svg>

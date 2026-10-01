@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#0a0a0a"/>
+  <rect x="0" y="0" width="800" height="56" fill="#141414"/>
+  <text x="32" y="35" fill="#fff" font-family="monospace" font-weight="bold" font-size="18">NOTESFLOW</text>
+  <text x="700" y="35" fill="#666" font-family="monospace" font-size="12" text-anchor="end">NOTES_&amp;_FOLDERS</text>
+
+  <rect x="32" y="90" width="200" height="360" fill="#111111" stroke="#333" stroke-width="1"/>
+  <text x="52" y="120" fill="#ff3333" font-family="monospace" font-size="12">FOLDERS</text>
+  <g fill="#1c1c1c" stroke="#333">
+    <rect x="52" y="140" width="150" height="44"/>
+    <rect x="52" y="194" width="150" height="44"/>
+    <rect x="52" y="248" width="150" height="44"/>
+  </g>
+  <g fill="#999" font-family="monospace" font-size="11">
+    <text x="66" y="166">📁 Work</text>
+    <text x="66" y="220">📁 Personal</text>
+    <text x="66" y="274">📁 Ideas</text>
+  </g>
+
+  <rect x="252" y="90" width="300" height="360" fill="#111111" stroke="#333" stroke-width="1"/>
+  <text x="272" y="120" fill="#ff3333" font-family="monospace" font-size="12">NOTE.EDITOR</text>
+  <rect x="272" y="140" width="260" height="8" fill="#333"/>
+  <rect x="272" y="164" width="220" height="6" fill="#222"/>
+  <rect x="272" y="182" width="240" height="6" fill="#222"/>
+  <rect x="272" y="200" width="180" height="6" fill="#222"/>
+  <rect x="272" y="230" width="260" height="110" fill="#161616" stroke="#282828"/>
+  <text x="284" y="252" fill="#777" font-family="monospace" font-size="10">Attach image or file...</text>
+  <rect x="272" y="360" width="90" height="26" fill="#ff3333"/>
+  <text x="290" y="377" fill="#000" font-family="monospace" font-size="10">SHARE</text>
+
+  <rect x="568" y="90" width="200" height="360" fill="#111111" stroke="#333" stroke-width="1"/>
+  <text x="588" y="120" fill="#ff3333" font-family="monospace" font-size="12">AI ASSISTANT</text>
+  <circle cx="668" cy="200" r="30" fill="none" stroke="#8a63d2" stroke-width="2"/>
+  <circle cx="658" cy="195" r="3" fill="#8a63d2"/>
+  <circle cx="678" cy="195" r="3" fill="#8a63d2"/>
+  <path d="M655 210q13 10 26 0" stroke="#8a63d2" stroke-width="2" fill="none"/>
+  <rect x="588" y="250" width="160" height="30" fill="#161616" stroke="#282828"/>
+  <text x="598" y="270" fill="#777" font-family="monospace" font-size="9">Ask about your notes...</text>
+</svg>
