@@ -62,22 +62,22 @@ function isRateLimited(request) {
   return false;
 }
 
-async function handler(request) {
+async function handler(request, response) {
   if (request.method !== "POST") {
-    return jsonResponse(request, 405, { code: "METHOD_NOT_ALLOWED", message: "Use POST." });
+    return jsonResponse(response, 405, { code: "METHOD_NOT_ALLOWED", message: "Use POST." });
   }
 
   if (!isSameOrigin(request)) {
-    return jsonResponse(request, 403, { code: "ORIGIN_NOT_ALLOWED", message: "Request origin is not allowed." });
+    return jsonResponse(response, 403, { code: "ORIGIN_NOT_ALLOWED", message: "Request origin is not allowed." });
   }
 
   if (isRateLimited(request)) {
-    return jsonResponse(request, 429, { code: "PROVIDER_RATE_LIMITED", message: "Too many chat requests. Try again shortly." });
+    return jsonResponse(response, 429, { code: "PROVIDER_RATE_LIMITED", message: "Too many chat requests. Try again shortly." });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return jsonResponse(request, 503, { code: "CHAT_NOT_CONFIGURED", message: "The chat service is not configured." });
+    return jsonResponse(response, 503, { code: "CHAT_NOT_CONFIGURED", message: "The chat service is not configured." });
   }
 
   let payload = request.body;
@@ -85,13 +85,13 @@ async function handler(request) {
     try {
       payload = JSON.parse(payload);
     } catch {
-      return jsonResponse(request, 400, { code: "INVALID_REQUEST", message: "Request body must be valid JSON." });
+      return jsonResponse(response, 400, { code: "INVALID_REQUEST", message: "Request body must be valid JSON." });
     }
   }
 
   const input = typeof payload?.input === "string" ? payload.input.trim() : "";
   if (!input || input.length > MAX_INPUT_LENGTH) {
-    return jsonResponse(request, 400, {
+    return jsonResponse(response, 400, {
       code: "INVALID_INPUT",
       message: `Message must contain 1 to ${MAX_INPUT_LENGTH} characters.`,
     });
@@ -107,25 +107,25 @@ async function handler(request) {
     const answer = result.text?.trim();
 
     if (!answer) {
-      return jsonResponse(request, 502, { code: "EMPTY_MODEL_RESPONSE", message: "The AI returned an empty response." });
+      return jsonResponse(response, 502, { code: "EMPTY_MODEL_RESPONSE", message: "The AI returned an empty response." });
     }
 
-    return jsonResponse(request, 200, { output_text: answer });
+    return jsonResponse(response, 200, { output_text: answer });
   } catch (error) {
     const status = Number(error?.status || error?.statusCode);
 
     if (status === 404) {
-      return jsonResponse(request, 502, { code: "PROVIDER_MODEL_UNAVAILABLE", message: "The configured AI model is unavailable." });
+      return jsonResponse(response, 502, { code: "PROVIDER_MODEL_UNAVAILABLE", message: "The configured AI model is unavailable." });
     }
     if (status === 401 || status === 403) {
-      return jsonResponse(request, 502, { code: "PROVIDER_AUTH_FAILED", message: "The AI provider rejected the server credentials." });
+      return jsonResponse(response, 502, { code: "PROVIDER_AUTH_FAILED", message: "The AI provider rejected the server credentials." });
     }
     if (status === 429) {
-      return jsonResponse(request, 429, { code: "PROVIDER_RATE_LIMITED", message: "The AI provider is rate-limiting requests." });
+      return jsonResponse(response, 429, { code: "PROVIDER_RATE_LIMITED", message: "The AI provider is rate-limiting requests." });
     }
 
     console.error("Gemini chat request failed:", error?.message || "Unknown provider error");
-    return jsonResponse(request, 502, { code: "PROVIDER_REQUEST_FAILED", message: "The AI provider could not complete the request." });
+    return jsonResponse(response, 502, { code: "PROVIDER_REQUEST_FAILED", message: "The AI provider could not complete the request." });
   }
 }
 

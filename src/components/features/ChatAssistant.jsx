@@ -1,7 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 // Keep model credentials on this server endpoint; VITE_* values are public.
-const CHAT_ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT || "/api/chat";
+const CHAT_ENDPOINT = (() => {
+  const configuredEndpoint = import.meta.env.VITE_CHAT_ENDPOINT?.trim();
+  if (!configuredEndpoint) return "/api/chat";
+
+  try {
+    const parsedEndpoint = new URL(configuredEndpoint, window.location.origin);
+    const isLoopback = ["localhost", "127.0.0.1", "::1"].includes(
+      parsedEndpoint.hostname.toLowerCase(),
+    );
+    return isLoopback ? "/api/chat" : configuredEndpoint;
+  } catch {
+    return "/api/chat";
+  }
+})();
 
 const MAX_REQUESTS = 6;
 
