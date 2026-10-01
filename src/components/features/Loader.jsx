@@ -6,6 +6,11 @@ const Loader = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const rafRef = useRef(null);
   const startRef = useRef(null);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     // Multi-phase realistic progress:
@@ -57,14 +62,14 @@ const Loader = ({ onComplete }) => {
 
     // Trigger exit after loader has been visible ~3000ms
     const timer1 = setTimeout(() => setPhase('exit'), 3000);
-    const timer2 = setTimeout(() => onComplete(), 3800);
+    const timer2 = setTimeout(() => onCompleteRef.current(), 3800);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
-  }, [onComplete]);
+  }, []);
 
   // Emil Kowalski signature easing curve
   const customEase = [0.76, 0, 0.24, 1];

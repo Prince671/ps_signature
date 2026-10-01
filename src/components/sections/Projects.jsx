@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import ScrollReveal from '../ui/ScrollReveal';
 import TextReveal from '../ui/TextReveal';
@@ -242,7 +241,6 @@ const projects = [
 const PANEL_COUNT = projects.length + 1;
 
 const Projects = () => {
-  const sectionRef = useRef(null);
 
   return (
     <section id="projects" className="relative">

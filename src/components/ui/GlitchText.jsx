@@ -8,7 +8,6 @@ import { motion, useInView } from 'framer-motion';
  */
 const GlitchText = ({
     children,
-    as: Tag = 'span',
     className = '',
     style = {},
     enableHover = true,
@@ -36,13 +35,13 @@ const GlitchText = ({
             onMouseEnter={handleMouseEnter}
             data-text={text}
         >
-            <Tag
+            <span
                 className={className}
                 style={{ ...style, position: 'relative', zIndex: 1 }}
                 data-text={text}
             >
                 {children}
-            </Tag>
+            </span>
         </span>
     );
 };

@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useRef, useEffect } from 'react';
+import { forwardRef, useMemo, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import './VariableProximity.css';
@@ -70,7 +70,7 @@ const VariableProximity = forwardRef((props, ref) => {
   const lastPositionRef = useRef({ x: null, y: null });
 
   // Pre-calculate positions of letters relative to the container to prevent layout thrashing
-  const updateLetterPositions = () => {
+  const updateLetterPositions = useCallback(() => {
     if (isLowPerf || !containerRef?.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
     letterPositionsRef.current = letterRefs.current.map(letterRef => {
@@ -81,7 +81,7 @@ const VariableProximity = forwardRef((props, ref) => {
         centerY: rect.top + rect.height / 2 - containerRect.top
       };
     });
-  };
+  }, [containerRef, isLowPerf]);
 
   useEffect(() => {
     if (isLowPerf) return;
@@ -91,7 +91,7 @@ const VariableProximity = forwardRef((props, ref) => {
       clearTimeout(timer);
       window.removeEventListener('resize', updateLetterPositions);
     };
-  }, [containerRef, isLowPerf]);
+  }, [containerRef, isLowPerf, updateLetterPositions]);
 
   const parsedSettings = useMemo(() => {
     const parseSettings = settingsStr =>

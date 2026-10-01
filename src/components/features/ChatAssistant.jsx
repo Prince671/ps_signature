@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { GoogleGenAI } from "@google/genai";
-
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+// Keep model credentials on this server endpoint; VITE_* values are public.
+const CHAT_ENDPOINT = import.meta.env.VITE_CHAT_ENDPOINT;
 
 const MODEL = "gemini-3.8-flash";
 const MAX_REQUESTS = 6;
@@ -93,13 +91,13 @@ export default function ChatAssistant() {
     const userMsg = (forcedInput ?? input).trim();
     if (!userMsg || inFlightRef.current) return;
 
-    if (!ai) {
+    if (!CHAT_ENDPOINT) {
       setMessages((prev) => [
         ...prev,
         { role: "user", text: userMsg },
         {
           role: "bot",
-          text: "Pulse is not configured yet. Please add VITE_GEMINI_API_KEY to your environment and restart the app.",
+          text: "Pulse is temporarily unavailable. Please use the contact section to reach Prince directly.",
         },
       ]);
       setInput("");
@@ -141,13 +139,20 @@ ${history || "(No previous conversation)"}
 Visitor: ${userMsg}
 Pulse:`;
 
-      const result = await ai.interactions.create({
-        model: MODEL,
-        input: prompt,
+      const response = await fetch(CHAT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: MODEL, input: prompt }),
       });
+      if (!response.ok) throw new Error(`Chat endpoint returned ${response.status}.`);
+      const result = await response.json();
 
       const answer =
-        typeof result.output_text === "string" ? result.output_text.trim() : "";
+        typeof result.output_text === "string"
+          ? result.output_text.trim()
+          : typeof result.answer === "string"
+            ? result.answer.trim()
+            : "";
 
       if (!answer) {
         throw new Error("The model returned an empty response.");

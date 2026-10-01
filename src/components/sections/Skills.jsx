@@ -24,7 +24,7 @@ const ProficiencyBadge = ({ level, label = "EXP.LVL" }) => {
   );
 };
 
-const SkillCard = ({ skill, idx }) => {
+const SkillCard = ({ skill }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState(skill.name);
   const [isMobile, setIsMobile] = useState(false);
@@ -433,7 +433,7 @@ const Skills = () => {
           className="flex flex-wrap justify-center gap-4 md:gap-5 mt-4 text-accent font-mono max-w-4xl mx-auto px-4 min-h-[300px] items-start content-start"
         >
           <AnimatePresence mode="popLayout">
-            {filteredSkills.map((skill, idx) => (
+            {filteredSkills.map((skill) => (
               <motion.div
                 key={skill.name}
                 layout
@@ -445,7 +445,7 @@ const Skills = () => {
                   layout: { type: "spring", stiffness: 400, damping: 30 }
                 }}
               >
-                <SkillCard skill={skill} idx={idx} />
+                <SkillCard skill={skill} />
               </motion.div>
             ))}
           </AnimatePresence>

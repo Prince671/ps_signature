@@ -4,18 +4,25 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
+    const readPreference = (key, fallback) => {
+        try {
+            return localStorage.getItem(key) ?? fallback;
+        } catch {
+            return fallback;
+        }
+    };
+
     const [theme, setTheme] = useState(() => {
-        const savedTheme = localStorage.getItem('theme');
-        return savedTheme || 'system';
+        return readPreference('theme', 'system');
     });
     
     // Default to 'red' accent, support 'green'
     const [accentColor, setAccentColor] = useState(() => {
-        return localStorage.getItem('accentColor') || 'red';
+        return readPreference('accentColor', 'red');
     });
 
     const [isLowPerf, setIsLowPerf] = useState(() => {
-        return localStorage.getItem('isLowPerf') === 'true';
+        return readPreference('isLowPerf', 'false') === 'true';
     });
 
     useEffect(() => {
@@ -36,15 +43,15 @@ export const ThemeProvider = ({ children }) => {
         };
 
         applyTheme(theme);
-        localStorage.setItem('theme', theme);
+        try { localStorage.setItem('theme', theme); } catch { /* Preferences remain usable without storage. */ }
 
         // Apply Accent Color
         root.setAttribute('data-accent', accentColor);
-        localStorage.setItem('accentColor', accentColor);
+        try { localStorage.setItem('accentColor', accentColor); } catch { /* Preferences remain usable without storage. */ }
 
         // Apply Performance Mode attribute
         root.setAttribute('data-low-perf', isLowPerf);
-        localStorage.setItem('isLowPerf', isLowPerf);
+        try { localStorage.setItem('isLowPerf', isLowPerf); } catch { /* Preferences remain usable without storage. */ }
 
         const listener = () => {
             if (theme === 'system') {

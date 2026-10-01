@@ -26,10 +26,23 @@ const Contact = () => {
 
   const [copied, setCopied] = useState(false);
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText("princesoni.cs21@gmail.com");
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText("princesoni.cs21@gmail.com");
+    } catch {
+      const helper = document.createElement("textarea");
+      helper.value = "princesoni.cs21@gmail.com";
+      helper.setAttribute("readonly", "");
+      helper.style.position = "fixed";
+      helper.style.opacity = "0";
+      document.body.appendChild(helper);
+      helper.select();
+      const didCopy = document.execCommand("copy");
+      helper.remove();
+      if (!didCopy) return;
+    }
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    window.setTimeout(() => setCopied(false), 2000);
   };
 
   const handleChange = (e) => {
@@ -73,8 +86,14 @@ const Contact = () => {
     const templateId = import.meta.env.VITE_TEMPLATE_ID;
     const publicKey = import.meta.env.VITE_PUBLIC_KEY;
 
-    // Initialize EmailJS with your public key
-    emailjs.init(publicKey);
+    if (!serviceId || !templateId || !publicKey) {
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: "The contact form is temporarily unavailable. Please email princesoni.cs21@gmail.com directly.",
+      });
+      return;
+    }
 
     // Append info to message so it displays in email regardless of template
     const detailedMessage = `${formData.message}\n\n---\nSender Info:\nIP: ${ip}\nLocation: ${location}\nDevice: ${deviceName}`;
@@ -90,25 +109,21 @@ const Contact = () => {
       device: deviceName,
     };
 
-    emailjs
-      .send(serviceId, templateId, templateParams)
-      .then((response) => {
-        console.log("Email sent successfully:", response);
-        setStatus({ submitting: false, submitted: true, error: null });
-        setFormData({ name: "", email: "", message: "" });
-
-        setTimeout(() => {
-          setStatus((prev) => ({ ...prev, submitted: false }));
-        }, 5000);
-      })
-      .catch((error) => {
-        console.error("Failed to send email:", error);
-        setStatus({
-          submitting: false,
-          submitted: false,
-          error: "Failed to send message. Please try again.",
-        });
+    try {
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      setStatus({ submitting: false, submitted: true, error: null });
+      setFormData({ name: "", email: "", message: "" });
+      window.setTimeout(() => {
+        setStatus((prev) => ({ ...prev, submitted: false }));
+      }, 5000);
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      setStatus({
+        submitting: false,
+        submitted: false,
+        error: "Failed to send message. Please try again or email princesoni.cs21@gmail.com directly.",
       });
+    }
   };
 
   const containerVariants = {
@@ -204,6 +219,7 @@ const Contact = () => {
                       princesoni.cs21@gmail.com
                     </a>
                     <button
+                      type="button"
                       onClick={copyEmail}
                       className="p-1.5 rounded-md hover:bg-secondary/40 text-muted hover:text-light transition-all flex-shrink-0"
                       title="Copy email address"

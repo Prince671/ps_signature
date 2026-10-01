@@ -41,7 +41,7 @@ A premium, high-performance developer portfolio built with a **Nothing OS**-insp
    ```
    - `VITE_SERVICE_ID`, `VITE_TEMPLATE_ID`, `VITE_PUBLIC_KEY` — EmailJS credentials for the contact form.
    - `VITE_RESUME_URL` — optional external resume link (defaults to `/resume.pdf`).
-   - `VITE_GEMINI_API_KEY` — API key for the Nova AI assistant. **See the security note below.**
+   - `VITE_CHAT_ENDPOINT` — optional backend endpoint for the Pulse AI assistant. It should accept `{ model, input }` JSON and return `{ output_text }` or `{ answer }` JSON.
 
 4. **Run the development server:**
    ```bash
@@ -64,9 +64,7 @@ These are community-run adapters, not official APIs — if either goes down, the
 
 ## ⚠️ Security note on the AI assistant
 
-The Nova chat assistant calls the Gemini API directly from the browser using `VITE_GEMINI_API_KEY`, which Vite bundles into the client-side JavaScript — **this means the key is visible to anyone who inspects the site's network requests or source.** Before deploying:
-- Restrict the key in Google AI Studio (HTTP referrer restriction + a low request quota), or
-- Move the Gemini call behind a small backend/serverless function so the key never reaches the browser.
+The Pulse assistant sends requests only to `VITE_CHAT_ENDPOINT`. Keep provider credentials on that server endpoint; never put private AI API keys in `VITE_*` variables because Vite bundles them into public client code. Without an endpoint, Pulse offers a contact fallback.
 
 ## 📄 License
 

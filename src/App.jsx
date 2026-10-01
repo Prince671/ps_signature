@@ -1,4 +1,4 @@
-import { useState, useEffect, Component } from 'react';
+import { useState, Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import ResumeRedirect from './components/features/ResumeRedirect.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -57,7 +57,7 @@ class ErrorBoundary extends Component {
 const AnimatedRoutes = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-  const { isLowPerf } = useTheme();
+  useTheme();
 
   return (
     <AnimatePresence mode="wait">

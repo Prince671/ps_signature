@@ -19,13 +19,23 @@ export const useGeolocation = () => {
 
     const fetchLocation = async () => {
       // Check cache first
-      const cached = sessionStorage.getItem('geo_data');
+      let cached = null;
+      try {
+        cached = sessionStorage.getItem('geo_data');
+      } catch {
+        // Continue with a network lookup when storage is unavailable.
+      }
       if (cached) {
-        if (isMounted) {
-          setLocData(JSON.parse(cached));
-          setLoading(false);
+        try {
+          const parsed = JSON.parse(cached);
+          if (isMounted && parsed && typeof parsed === 'object') {
+            setLocData((current) => ({ ...current, ...parsed }));
+            setLoading(false);
+            return;
+          }
+        } catch {
+          try { sessionStorage.removeItem('geo_data'); } catch { /* Ignore unavailable storage. */ }
         }
-        return;
       }
 
       // Prevent concurrent identical requests
@@ -54,7 +64,7 @@ export const useGeolocation = () => {
             } else {
               throw new Error('Primary failed');
             }
-          } catch (err) {
+          } catch {
             try {
               // Fallback: ipapi.co
               const res = await fetch('https://ipapi.co/json/');
@@ -77,13 +87,15 @@ export const useGeolocation = () => {
 
       try {
         const data = await fetchPromise;
-        sessionStorage.setItem('geo_data', JSON.stringify(data));
+        try { sessionStorage.setItem('geo_data', JSON.stringify(data)); } catch { /* Storage is optional. */ }
         if (isMounted) {
           setLocData(data);
           setLoading(false);
         }
-      } catch (e) {
+      } catch {
         if (isMounted) setLoading(false);
+      } finally {
+        fetchPromise = null;
       }
     };
 
