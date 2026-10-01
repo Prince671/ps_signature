@@ -25,6 +25,7 @@ const ProficiencyBadge = ({ level, label = "EXP.LVL" }) => {
 };
 
 const SkillCard = ({ skill }) => {
+  const projectEvidence = getProjectEvidence(skill.name);
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState(skill.name);
   const [isMobile, setIsMobile] = useState(false);
@@ -84,7 +85,7 @@ const SkillCard = ({ skill }) => {
         onMouseEnter={startScramble}
         onMouseLeave={stopScramble}
         layoutId={`skill-${skill.name}`}
-        className="flex items-center gap-3 bg-primary border-2 px-4 md:px-5 py-3 transition-all duration-200 cursor-default group relative overflow-visible"
+        className="flex min-h-[76px] flex-col items-start justify-center gap-2 bg-primary border-2 px-4 md:px-5 py-3 transition-all duration-200 cursor-default group relative overflow-visible"
         style={{
           borderColor: isHovered ? skill.color : 'var(--color-border-strong)',
           boxShadow: isHovered 
@@ -104,6 +105,7 @@ const SkillCard = ({ skill }) => {
         />
         
         {/* Brand Icon SVG */}
+        <div className="flex items-center gap-3">
         <svg 
           viewBox={skill.viewBox || "0 0 24 24"} 
           className="w-6 h-6 shrink-0 opacity-80 group-hover:opacity-100 transition-all duration-300"
@@ -133,6 +135,12 @@ const SkillCard = ({ skill }) => {
             </span>
           ))}
         </span>
+        </div>
+        {projectEvidence.length > 0 && (
+          <span className="max-w-56 text-[9px] font-mono leading-relaxed text-muted">
+            USED IN: {projectEvidence.join(" · ")}
+          </span>
+        )}
       </motion.div>
 
       {/* Floating Cyberpunk Tooltip */}
@@ -356,6 +364,27 @@ const SKILLS_DATA = [
     icon: <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.964 8.14L15.85 10.26l-1.06-1.06 2.12-2.12a.75.75 0 011.06 1.06zm-3.18 3.18l-1.06-1.06 2.12-2.12 1.06 1.06-2.12 2.12zM8 16l-1.5-1.5L11 10l1.5 1.5L8 16z"/>
   }
 ];
+const PROJECT_EVIDENCE = [
+  { name: "Collaborative Code & Whiteboard", tech: ["React", "Node.js", "Express", "MongoDB", "WebSockets", "Monaco Editor"] },
+  { name: "StudySphere", tech: ["React", "Node.js", "Express", "MongoDB", "Python"] },
+  { name: "RAG Application", tech: ["LangChain", "Pinecone", "Generative AI", "Vector Embeddings"] },
+  { name: "NotesFlow", tech: ["React", "Node.js", "Express", "MongoDB", "Cloudinary", "JWT"] },
+  { name: "AI Agent", tech: ["Python", "Flask", "LangChain", "Mistral AI", "MongoDB", "React"] },
+];
+
+const SKILL_TECH_ALIASES = {
+  "VECTOR DB": ["Pinecone", "Vector Embeddings"],
+  "SOCKET.IO": ["WebSockets"],
+};
+
+function getProjectEvidence(skillName) {
+  const normalizedName = skillName.toLowerCase();
+  const relatedTech = [normalizedName, ...(SKILL_TECH_ALIASES[skillName] || []).map((tech) => tech.toLowerCase())];
+  return PROJECT_EVIDENCE
+    .filter((project) => project.tech.some((tech) => relatedTech.includes(tech.toLowerCase())))
+    .map((project) => project.name);
+}
+
 const FILTERS = ["ALL", "BACKEND & DB", "FRONTEND & DESIGN", "CLOUD & DEV TOOLS"];
 
 const Skills = () => {
@@ -378,7 +407,7 @@ const Skills = () => {
   });
 
   return (
-    <section id="skills" className="section-padding bg-transparent relative overflow-hidden py-24">
+    <section className="section-padding bg-transparent relative overflow-hidden py-24">
       {/* Subtle Dot-Grid Background Overlay */}
       <div
         className="absolute inset-0 z-[-1] opacity-30 pointer-events-none"
@@ -416,6 +445,7 @@ const Skills = () => {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
+              aria-pressed={activeFilter === filter}
               className={`px-3 py-1.5 border-2 border-border-strong uppercase transition-all duration-150 relative ${
                 activeFilter === filter 
                   ? "bg-accent text-primary shadow-[2px_2px_0px_var(--color-red)] -translate-x-[1px] -translate-y-[1px]" 

@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import ScrollReveal from "../ui/ScrollReveal";
-import { useGeolocation } from "../../hooks/useGeolocation";
 import TextReveal from "../ui/TextReveal";
 import MagneticButton from "../ui/MagneticButton";
 
@@ -10,7 +9,6 @@ const Contact = () => {
   const ref = useRef(null);
   const formRef = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
-  const { locData } = useGeolocation();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -75,12 +73,6 @@ const Contact = () => {
 
     setStatus({ submitting: true, submitted: false, error: null });
 
-    // Fetch user info with fallbacks (helps if one is blocked by adblockers)
-    let ip = locData.ip;
-    let location = locData.fullLocation;
-    let deviceName =
-      typeof navigator !== "undefined" ? navigator.userAgent : "Unknown";
-
     // EmailJS configuration
     const serviceId = import.meta.env.VITE_SERVICE_ID;
     const templateId = import.meta.env.VITE_TEMPLATE_ID;
@@ -95,18 +87,11 @@ const Contact = () => {
       return;
     }
 
-    // Append info to message so it displays in email regardless of template
-    const detailedMessage = `${formData.message}\n\n---\nSender Info:\nIP: ${ip}\nLocation: ${location}\nDevice: ${deviceName}`;
-
-    // Prepare form data for EmailJS to match your template variables
     const templateParams = {
       name: formData.name,
       email: formData.email,
-      message: detailedMessage,
-      title: `Portfolio Contact from ${formData.name}`, // Matches {{title}} in your screenshot
-      ip: ip,
-      location: location,
-      device: deviceName,
+      message: formData.message,
+      title: `Portfolio Contact from ${formData.name}`,
     };
 
     try {
@@ -142,7 +127,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="section-padding bg-transparent">
+    <section className="section-padding bg-transparent">
       <div className="container-custom" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -223,6 +208,7 @@ const Contact = () => {
                       onClick={copyEmail}
                       className="p-1.5 rounded-md hover:bg-secondary/40 text-muted hover:text-light transition-all flex-shrink-0"
                       title="Copy email address"
+                      aria-label={copied ? "Email address copied" : "Copy email address"}
                     >
                       {copied ? (
                         <svg
@@ -331,6 +317,7 @@ const Contact = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm text-muted hover:text-light transition-colors"
+                      aria-label="Prince Soni on GitHub"
                     >
                       <svg
                         className="w-6 h-6"
@@ -347,6 +334,7 @@ const Contact = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm text-muted hover:text-light transition-colors"
+                      aria-label="Prince Soni on LeetCode"
                     >
                       <img
                         src="https://leetcode.com/_next/static/images/logo-dark-c96c407d175e36c81e236fcfdd682a0b.png"
@@ -360,6 +348,7 @@ const Contact = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm text-muted hover:text-light transition-colors"
+                      aria-label="Prince Soni on LinkedIn"
                     >
                       <svg
                         className="w-6 h-6"
@@ -405,6 +394,9 @@ const Contact = () => {
               <h3 className="text-xl font-medium mb-6 uppercase tracking-widest border-b-2 border-border-strong pb-2 transition-colors duration-300">
                 Send Message
               </h3>
+              <p className="mb-6 text-xs font-mono text-muted" id="contact-privacy-note">
+                Your name, email, and message are sent to the contact service when you submit. Please don’t include sensitive information.
+              </p>
 
               {/* Honeypot field — hidden from humans, catches bots */}
               <div
@@ -437,6 +429,8 @@ const Contact = () => {
                   type="text"
                   id="name"
                   name="name"
+                  autoComplete="name"
+                  aria-describedby="contact-privacy-note"
                   value={formData.name}
                   onChange={handleChange}
                   className="w-full bg-transparent p-4 text-light font-mono focus:outline-none transition-all duration-200 z-0"
@@ -480,6 +474,8 @@ const Contact = () => {
                   type="email"
                   id="email"
                   name="email"
+                  autoComplete="email"
+                  aria-describedby="contact-privacy-note"
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full bg-transparent p-4 text-light font-mono focus:outline-none transition-all duration-200 z-0"
@@ -522,6 +518,7 @@ const Contact = () => {
                 <textarea
                   id="message"
                   name="message"
+                  aria-describedby="contact-privacy-note"
                   value={formData.message}
                   onChange={handleChange}
                   rows="5"
@@ -597,13 +594,13 @@ const Contact = () => {
               </MagneticButton>
 
               {status.submitted && (
-                <div className="mt-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 text-green-300 text-center">
+                <div className="mt-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 text-green-300 text-center" role="status" aria-live="polite">
                   Message sent successfully!
                 </div>
               )}
 
               {status.error && (
-                <div className="mt-4 p-3 bg-red-500 bg-opacity-20 border border-red-500 text-red-300 text-center">
+                <div className="mt-4 p-3 bg-red-500 bg-opacity-20 border border-red-500 text-red-300 text-center" role="alert">
                   {status.error}
                 </div>
               )}

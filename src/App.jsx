@@ -1,21 +1,11 @@
-import { useState, Component } from 'react';
+import { useState, Component, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import ResumeRedirect from './components/features/ResumeRedirect.jsx';
+import DeferredSection from './components/ui/DeferredSection.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/layout/Header.jsx';
 import Hero from './components/sections/Hero.jsx';
-import Projects from './components/sections/Projects.jsx';
 import TerminalFeature from './components/features/TerminalFeature.jsx';
 import FloatingTerminal from './components/features/FloatingTerminal.jsx';
-import ChatAssistant from './components/features/ChatAssistant.jsx';
-import Skills from './components/sections/Skills.jsx';
-import GithubStats from './components/features/GithubStats.jsx';
-import LeetCodeStats from './components/features/LeetCodeStats.jsx';
-import Education from './components/sections/Education.jsx';
-import Certificates from './components/sections/Certificates.jsx';
-import Blogs from './components/sections/Blogs.jsx';
-import BlogPost from './components/sections/BlogPost.jsx';
-import Contact from './components/sections/Contact.jsx';
 import Footer from './components/layout/Footer.jsx';
 import Loader from './components/features/Loader.jsx';
 import AnimatedBackground from './components/effects/AnimatedBackground.jsx';
@@ -26,7 +16,18 @@ import SectionDivider from './components/ui/SectionDivider.jsx';
 import BackToTop from './components/layout/BackToTop.jsx';
 import HoverImageLinks from './components/ui/HoverImageLinks.jsx';
 import { ThemeProvider, useTheme } from './context/ThemeContext.jsx';
-import NotFound from './components/sections/NotFound.jsx';
+const ResumeRedirect = lazy(() => import('./components/features/ResumeRedirect.jsx'));
+const BlogPost = lazy(() => import('./components/sections/BlogPost.jsx'));
+const NotFound = lazy(() => import('./components/sections/NotFound.jsx'));
+const Skills = lazy(() => import('./components/sections/Skills.jsx'));
+const Projects = lazy(() => import('./components/sections/Projects.jsx'));
+const GithubStats = lazy(() => import('./components/features/GithubStats.jsx'));
+const LeetCodeStats = lazy(() => import('./components/features/LeetCodeStats.jsx'));
+const Education = lazy(() => import('./components/sections/Education.jsx'));
+const Certificates = lazy(() => import('./components/sections/Certificates.jsx'));
+const Blogs = lazy(() => import('./components/sections/Blogs.jsx'));
+const Contact = lazy(() => import('./components/sections/Contact.jsx'));
+const ChatAssistant = lazy(() => import('./components/features/ChatAssistant.jsx'));
 
 /* ── Error Boundary ── */
 class ErrorBoundary extends Component {
@@ -62,7 +63,7 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/resume" element={<ResumeRedirect />} />
+        <Route path="/resume" element={<Suspense fallback={<div className="min-h-screen bg-primary" />}><ResumeRedirect /></Suspense>} />
         <Route 
           path="/blog/:id" 
           element={
@@ -72,7 +73,7 @@ const AnimatedRoutes = () => {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <BlogPost />
+              <Suspense fallback={<div className="min-h-screen bg-primary" />}><BlogPost /></Suspense>
             </motion.div>
           } 
         />
@@ -94,31 +95,32 @@ const AnimatedRoutes = () => {
                 >
                   <SmoothScroll />
                   <AnimatedBackground />
+                  <a className="skip-link" href="#main-content">Skip to content</a>
                   <Header />
-                  <main>
+                  <main id="main-content" tabIndex="-1">
                     <Hero />
                     <SectionDivider />
-                    <Skills />
+                    <DeferredSection id="skills" component={Skills} />
                     <SectionDivider />
-                    <Projects />
+                    <DeferredSection id="projects" component={Projects} className="portfolio-deferred-projects" />
                     <SectionDivider />
-                    <GithubStats />
-                    <LeetCodeStats />
+                    <DeferredSection id="activity" component={GithubStats} />
+                    <DeferredSection id="leetcode-activity" component={LeetCodeStats} />
                     <SectionDivider />
-                    <Education />
+                    <DeferredSection id="education" component={Education} />
                     <SectionDivider />
-                    <Certificates />
+                    <DeferredSection id="certificates" component={Certificates} />
                     <SectionDivider />
                     <HoverImageLinks />
                     <SectionDivider />
-                    <Blogs />
+                    <DeferredSection id="blogs" component={Blogs} />
                     <SectionDivider />
-                    <Contact />
+                    <DeferredSection id="contact" component={Contact} />
                   </main>
                   <Footer />
                   <TerminalFeature />
                   <FloatingTerminal />
-                  <ChatAssistant />
+                  <Suspense fallback={null}><ChatAssistant /></Suspense>
                   <BackToTop />
 
                   <CursorBubble />
@@ -137,7 +139,7 @@ const AnimatedRoutes = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <NotFound />
+            <Suspense fallback={<div className="min-h-screen bg-primary" />}><NotFound /></Suspense>
             </motion.div>
           } 
         />

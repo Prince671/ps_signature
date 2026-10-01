@@ -163,7 +163,7 @@ Pulse:`;
     } catch (error) {
       console.error("Pulse request failed:", error);
       const detail = error?.message?.includes("404")
-        ? "The configured Gemini model is unavailable for this API key. Check the model name and API access."
+        ? "The configured AI provider or model is unavailable. Please check the server configuration."
         : error?.message?.includes("429")
           ? "The AI service is temporarily rate-limited. Please try again later."
           : "I couldn't connect to the AI service. Please try again in a moment.";

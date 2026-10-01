@@ -5,8 +5,8 @@ A premium, high-performance developer portfolio built with a **Nothing OS**-insp
 ## ✨ key features
 
 - **Matrix Snake Loader**: A custom 7x7 dot-matrix spiral animation with real-time system logs.
-- **Interactive Terminal**: A fully functional custom terminal with command history (↑/↓ arrows), typewriter effects, and a `nova` command to summon the AI assistant.
-- **Nova AI Assistant**: A Gemini-powered chat assistant that answers questions about the portfolio, skills, and projects.
+- **Interactive Terminal**: A custom terminal with command history (↑/↓ arrows), typewriter effects, and a `pulse` command to open the AI assistant.
+- **Pulse AI Assistant**: An optional chat assistant for portfolio questions that connects through a configured backend endpoint.
 - **Live GitHub Activity**: A real contribution heatmap pulled from a public, no-auth GitHub API.
 - **Live LeetCode Activity**: A real submission heatmap and solved-problem stats pulled from a public LeetCode data adapter, with a graceful fallback if the API is unavailable.
 - **Bento Grid Skills**: A filterable grid covering languages, frameworks, AI/GenAI tooling, databases, cloud, and dev tools.
@@ -19,7 +19,7 @@ A premium, high-performance developer portfolio built with a **Nothing OS**-insp
 
 - **Frontend**: React 19, Vite, Tailwind CSS, Framer Motion
 - **Showcased Stack**: JavaScript, React, Node.js, Express, MongoDB, Python, LangChain, Pinecone/ChromaDB, AWS
-- **AI Assistant**: Google Gemini (`@google/genai`)
+- **AI Assistant**: Optional server endpoint (`VITE_CHAT_ENDPOINT`); provider credentials stay server-side.
 - **Deployment**: Vercel
 
 ## 🚀 getting started

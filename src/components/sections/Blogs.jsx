@@ -131,7 +131,7 @@ const Blogs = () => {
     const post = blogPosts[current];
 
     return (
-        <section id="blogs" className="py-20 px-4 md:px-10 relative overflow-hidden bg-transparent" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        <section className="py-20 px-4 md:px-10 relative overflow-hidden bg-transparent" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <div className="absolute top-0 right-0 w-64 h-64 border-r-2 border-t-2 border-border-strong opacity-10 pointer-events-none" />
 
             <div className="container-custom mx-auto relative z-10">

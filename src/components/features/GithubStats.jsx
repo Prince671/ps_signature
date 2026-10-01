@@ -89,7 +89,7 @@ const GithubStats = () => {
         : ['#1a1a1a', '#5c1212', '#991f1f', '#cc2929', '#ff3333'];
 
     return (
-        <section id="activity" className="section-padding bg-transparent relative overflow-hidden min-h-[80vh] flex items-center">
+        <section className="section-padding bg-transparent relative overflow-hidden min-h-[80vh] flex items-center">
             <div className="container-custom w-full" ref={ref}>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

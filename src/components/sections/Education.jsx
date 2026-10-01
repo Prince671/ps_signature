@@ -68,7 +68,7 @@ const Education = () => {
   ];
 
   return (
-    <section id="education" className="section-padding bg-transparent relative">
+    <section className="section-padding bg-transparent relative">
       <TimelineStyles />
       <div className="container-custom" ref={ref}>
         <motion.div

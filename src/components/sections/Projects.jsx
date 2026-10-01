@@ -14,7 +14,13 @@ const projects = [
     color: "from-blue-500/20 to-purple-500/20",
     liveLink: "",
     githubLink: "",
-    description: "A full-stack real-time collaboration platform with live code editing, whiteboarding, authentication, and multi-language execution. Optimized rendering and APIs, cutting load time from 3.2s to 1.8s and lifting Lighthouse performance from 68% to 91%.",
+    description: "A real-time collaboration workspace that brings live code editing, whiteboarding, authentication, and multi-language execution together.",
+    caseStudy: {
+      role: "Implemented the collaborative client, real-time synchronization, and supporting full-stack architecture.",
+      problem: "Remote collaborators need to work on code and diagrams together without switching between disconnected tools.",
+      approach: "Combines a React and Monaco client with WebSocket synchronization, authentication, and a MongoDB-backed service.",
+      outcome: "A shared workspace for collaborative coding, whiteboarding, and code execution.",
+    },
     diagramNodes: [
       { 
         id: 'client', 
@@ -58,7 +64,13 @@ const projects = [
     color: "from-emerald-500/20 to-blue-500/20",
     liveLink: "https://face-atten-d.vercel.app/",
     githubLink: "https://github.com/Prince671/face_Attend",
-    description: "An AI-powered face recognition attendance and LMS platform with automated attendance, authentication, and course management. Optimized APIs and rendering, cutting load time from 3.0s to 1.7s and lifting performance from 70% to 92%.",
+    description: "An attendance and learning platform that combines face recognition, authentication, and course management.",
+    caseStudy: {
+      role: "Connected the React dashboard, API, and Python recognition service.",
+      problem: "Attendance tracking and course management are handled as separate tasks for students and instructors.",
+      approach: "Connects a React dashboard and Express API with a Python face-recognition service and MongoDB data store.",
+      outcome: "One platform for recognition-assisted attendance records and learning management.",
+    },
     diagramNodes: [
       { 
         id: 'client', 
@@ -102,7 +114,13 @@ const projects = [
     color: "from-violet-500/20 to-red-500/20",
     liveLink: "https://r-a-g.vercel.app/",
     githubLink: "https://github.com/Prince671/RAG/",
-    description: "A Retrieval-Augmented Generation application built with LangChain, Pinecone, and vector embeddings for semantic search and context-aware document Q&A. Optimized retrieval workflows, cutting load time from 3.1s to 1.9s and lifting performance from 67% to 90%.",
+    description: "A retrieval-augmented generation app for semantic search and context-aware document questions, built with LangChain, Pinecone, and vector embeddings.",
+    caseStudy: {
+      role: "Implemented the retrieval and document question-answering workflow.",
+      problem: "A language model needs relevant source context to answer questions about a user's documents.",
+      approach: "Embeds document content, retrieves semantically related context from Pinecone, and uses LangChain to shape the response flow.",
+      outcome: "Document-grounded question answering supported by semantic retrieval.",
+    },
     diagramNodes: [
       { 
         id: 'docs', 
@@ -147,6 +165,12 @@ const projects = [
     liveLink: "",
     githubLink: "https://github.com/Prince671/Notes_Flow",
     description: "A full-stack notes management app with folder organization, shareable notes, file/image uploads via Cloudinary, and an integrated AI assistant that can answer questions about your notes.",
+    caseStudy: {
+      role: "Built the notes workspace, upload flow, and AI-assisted question answering.",
+      problem: "Notes, uploaded files, and questions about personal content need a single organized workspace.",
+      approach: "Uses a React client, Express API, MongoDB, Cloudinary uploads, and an AI assistant for note questions.",
+      outcome: "A notes workspace with folders, sharing, media uploads, and AI-assisted Q&A.",
+    },
     diagramNodes: [
       { 
         id: 'client', 
@@ -191,6 +215,12 @@ const projects = [
     liveLink: "",
     githubLink: "https://github.com/Prince671/AI-Agent",
     description: "A tool-using intelligent assistant built with LangChain and Mistral AI — it reasons over a query, automatically selects the right tool (weather, news, stocks, currency, places), and streams a grounded response back in real time, with voice input/output and persistent chat history.",
+    caseStudy: {
+      role: "Implemented tool selection, the streaming assistant flow, voice controls, and chat persistence.",
+      problem: "A general assistant needs access to current information and structured external tasks beyond model-only answers.",
+      approach: "Routes requests through a LangChain agent that can select tools, with a Flask API, Mistral AI, React client, and persistent MongoDB history.",
+      outcome: "A conversational interface for tool-assisted responses, voice input/output, and saved chat history.",
+    },
     diagramNodes: [
       { 
         id: 'client', 
@@ -243,7 +273,7 @@ const PANEL_COUNT = projects.length + 1;
 const Projects = () => {
 
   return (
-    <section id="projects" className="relative">
+    <section className="relative">
       {/* Section Header — sits above the horizontal scroll area */}
       <div className="section-padding pb-0 bg-transparent relative z-10">
         <div className="container-custom">
@@ -263,8 +293,8 @@ const Projects = () => {
                 <TextReveal text="FEATURED PROJECTS" delay={0.2} />
               </h2>
               <div className="w-16 h-[4px] mb-6" style={{ backgroundColor: 'var(--color-red)' }} />
-              <p className="text-muted max-w-2xl text-lg hidden md:block">
-                Scroll down to explore — each project slides in horizontally.
+              <p className="text-muted max-w-2xl text-lg">
+                Explore the problem, technical approach, and working links for each project. On smaller screens, projects are listed vertically.
               </p>
             </ScrollReveal>
           </motion.div>
@@ -291,6 +321,8 @@ const Projects = () => {
                   <img
                     src={project.image}
                     alt={project.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700 object-cover object-center opacity-90 hover:opacity-100"
                   />
                 </div>
@@ -320,6 +352,21 @@ const Projects = () => {
                   <p className="text-sm md:text-base text-muted leading-relaxed max-w-xl">
                     {project.description}
                   </p>
+                )}
+
+                {project.caseStudy && (
+                  <details className="group border-y border-border-strong/70 py-3">
+                    <summary className="cursor-pointer list-none font-mono text-xs uppercase tracking-widest text-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-red focus-visible:outline-offset-4">
+                      <span className="group-open:hidden">Read project case study +</span>
+                      <span className="hidden group-open:inline">Hide project case study −</span>
+                    </summary>
+                    <dl className="mt-4 grid gap-4 text-sm leading-relaxed">
+                      <div><dt className="font-mono text-[10px] uppercase tracking-widest text-red">Role</dt><dd className="mt-1 text-muted">{project.caseStudy.role}</dd></div>
+                      <div><dt className="font-mono text-[10px] uppercase tracking-widest text-red">Problem</dt><dd className="mt-1 text-muted">{project.caseStudy.problem}</dd></div>
+                      <div><dt className="font-mono text-[10px] uppercase tracking-widest text-red">Approach</dt><dd className="mt-1 text-muted">{project.caseStudy.approach}</dd></div>
+                      <div><dt className="font-mono text-[10px] uppercase tracking-widest text-red">Outcome</dt><dd className="mt-1 text-muted">{project.caseStudy.outcome}</dd></div>
+                    </dl>
+                  </details>
                 )}
 
                 {/* Tech Stack */}
@@ -357,6 +404,9 @@ const Projects = () => {
                       </svg>
                       Source
                     </a>
+                  )}
+                  {!project.githubLink && !project.liveLink && (
+                    <span className="text-xs font-mono text-muted" role="status">Demo and source links are not available yet.</span>
                   )}
                   {project.liveLink && project.liveLink !== '#' && (
                     <a

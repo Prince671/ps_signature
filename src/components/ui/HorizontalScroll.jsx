@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 /**
@@ -8,6 +8,15 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
  */
 const HorizontalScroll = ({ children, panelCount = 3 }) => {
   const containerRef = useRef(null);
+  const [useVerticalLayout, setUseVerticalLayout] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px), (prefers-reduced-motion: reduce)');
+    const updateLayout = () => setUseVerticalLayout(mediaQuery.matches);
+    updateLayout();
+    mediaQuery.addEventListener('change', updateLayout);
+    return () => mediaQuery.removeEventListener('change', updateLayout);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -29,11 +38,14 @@ const HorizontalScroll = ({ children, panelCount = 3 }) => {
   return (
     <section
       ref={containerRef}
-      style={{ height: `${panelCount * 100}vh` }}
-      className="relative"
+      style={{ height: useVerticalLayout ? 'auto' : `${panelCount * 100}vh` }}
+      className="relative portfolio-project-scroll"
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div style={{ x }} className="flex h-full">
+      <div className={useVerticalLayout ? 'relative h-auto' : 'sticky top-0 h-screen overflow-hidden'}>
+        <motion.div
+          style={{ x: useVerticalLayout ? 0 : x }}
+          className={`portfolio-project-track ${useVerticalLayout ? 'flex flex-col h-auto' : 'flex h-full'}`}
+        >
           {children}
         </motion.div>
       </div>

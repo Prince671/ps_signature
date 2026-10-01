@@ -99,7 +99,7 @@ const LeetCodeStats = () => {
     const colors = ['#1a1a1a', '#5c1a12', '#99331f', '#cc5729', '#ff8c33'];
 
     return (
-        <section id="leetcode-activity" className="section-padding bg-transparent relative overflow-hidden">
+        <section className="section-padding bg-transparent relative overflow-hidden">
             <div className="container-custom w-full" ref={ref}>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

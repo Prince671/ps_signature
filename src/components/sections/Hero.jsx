@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import TextDecode from '../ui/TextDecode';
-import { useGeolocation } from '../../hooks/useGeolocation';
 import Avatar from '../Avatar';
 import VisitorCounter from '../ui/VisitorCounter';
 import TextReveal from '../ui/TextReveal';
@@ -16,6 +15,7 @@ const ROLES = [
 ];
 
 const TypewriterRole = () => {
+  const prefersReducedMotion = useReducedMotion();
   const [roleIdx, setRoleIdx] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -23,12 +23,14 @@ const TypewriterRole = () => {
 
   // Blink cursor independently
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
     const id = setInterval(() => setCursorOn(c => !c), 530);
     return () => clearInterval(id);
-  }, []);
+  }, [prefersReducedMotion]);
 
   // Typing engine
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
     const current = ROLES[roleIdx];
     let timeout;
 
@@ -48,11 +50,11 @@ const TypewriterRole = () => {
     }
 
     return () => clearTimeout(timeout);
-  }, [displayed, isDeleting, roleIdx]);
+  }, [displayed, isDeleting, roleIdx, prefersReducedMotion]);
 
   return (
     <span className="inline-flex items-center">
-      <span>{displayed}</span>
+      <span>{prefersReducedMotion ? ROLES[0] : displayed}</span>
       <span
         style={{
           display: 'inline-block',
@@ -72,7 +74,6 @@ const TypewriterRole = () => {
 const Hero = () => {
   const sectionRef = useRef(null);
 
-  const { locData } = useGeolocation();
 
   // Scroll progress tied to the hero section
   const { scrollYProgress } = useScroll({
@@ -236,6 +237,11 @@ const Hero = () => {
                   </a>
                 </MagneticButton>
                 <MagneticButton strength={20}>
+                  <a href="#contact" className="group flex items-center justify-center font-bold text-xs tracking-widest uppercase px-6 py-4 border-2 border-border-strong text-accent hover:border-red hover:text-red transition-colors">
+                    CONTACT
+                  </a>
+                </MagneticButton>
+                <MagneticButton strength={20}>
                   <a href={import.meta.env.VITE_RESUME_URL || '/resume.pdf'}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -252,16 +258,6 @@ const Hero = () => {
                 </MagneticButton>
               </motion.div>
 
-              <motion.div
-                variants={childVariants}
-                className="mt-8 flex items-center gap-4 text-xs font-mono text-muted/50 uppercase tracking-widest"
-              >
-                <div className="flex flex-col border-l-2 pl-3" style={{ borderColor: 'var(--color-red)' }}>
-                  <span>SYS.LOC: {locData.city}, {locData.countryCode}</span>
-                  <span>LAT: {Math.abs(locData.lat).toFixed(4)}° {locData.lat >= 0 ? 'N' : 'S'}</span>
-                  <span>LNG: {Math.abs(locData.lon).toFixed(4)}° {locData.lon >= 0 ? 'E' : 'W'}</span>
-                </div>
-              </motion.div>
             </motion.div>
           </motion.div>
 

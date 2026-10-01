@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { label: 'Activity', id: 'activity' },
   { label: 'Education', id: 'education' },
   { label: 'Certs', id: 'certificates' },
+  { label: 'Blog', id: 'blogs' },
   { label: 'Contact', id: 'contact' },
 ];
 
@@ -94,11 +95,13 @@ const Header = () => {
       >
         <div className="w-full px-4 md:px-10 flex items-center justify-between h-16 relative">
           {/* Logo */}
-          <motion.div
+          <motion.button
+            type="button"
+            aria-label="Scroll to home"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center gap-4 cursor-pointer shrink-0"
+            className="flex items-center gap-4 cursor-pointer shrink-0 bg-transparent border-0 p-0"
             onClick={() => scrollToSection('home')}
           >
             <div
@@ -118,14 +121,15 @@ const Header = () => {
                 DEVELOPER PORTFOLIO
               </span>
             </div>
-          </motion.div>
+          </motion.button>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 mx-2 lg:mx-4">
+          <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-0.5 lg:gap-1 mx-2 lg:mx-4">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
+                aria-current={activeSection === link.id ? 'location' : undefined}
                 className={`relative px-2.5 lg:px-3.5 py-2 font-mono text-[10px] lg:text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
                   activeSection === link.id ? 'text-red' : 'text-muted hover:text-accent'
                 }`}
@@ -188,8 +192,9 @@ const Header = () => {
               className="text-accent p-2 focus:outline-none z-[70] border-2 border-border-strong relative w-10 h-10 flex items-center justify-center"
               style={{ boxShadow: '2px 2px 0px var(--color-border-strong)', backgroundColor: 'var(--color-primary)' }}
               onClick={() => setMenuOpen(o => !o)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={menuOpen}
+                aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-navigation"
             >
               <div className="w-5 h-4 relative flex flex-col justify-between">
                 <motion.span
@@ -225,7 +230,7 @@ const Header = () => {
             style={{ backgroundColor: 'var(--color-primary)' }}
           >
             <div className="h-full flex flex-col justify-center px-8 pt-16">
-              <nav className="flex flex-col gap-1">
+              <nav id="mobile-navigation" aria-label="Mobile navigation" className="flex flex-col gap-1">
                 {NAV_LINKS.map((link, i) => (
                   <motion.button
                     key={link.id}
@@ -234,6 +239,7 @@ const Header = () => {
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.4, delay: 0.05 * i, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => scrollToSection(link.id)}
+                    aria-current={activeSection === link.id ? 'location' : undefined}
                     className={`text-left py-3 font-mono text-3xl font-black uppercase tracking-tight border-b-2 transition-colors duration-300 ${
                       activeSection === link.id ? 'text-red border-red' : 'text-accent border-border-strong/40'
                     }`}

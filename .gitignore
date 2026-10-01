@@ -54,6 +54,7 @@ temp_stitch.html
 
 # Documents and local files
 *.pdf
+!public/resume.pdf
 mcp_*.txt
 
 # Package manager debug files

@@ -300,7 +300,7 @@ const Certificates = () => {
 
   return (
     <>
-      <section id="certificates" className="section-padding bg-transparent relative overflow-hidden">
+      <section className="section-padding bg-transparent relative overflow-hidden">
         <div className="container-custom w-full" ref={ref}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
